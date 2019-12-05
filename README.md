@@ -11,4 +11,27 @@ APIs:
 - Cancel jobs
 - Schedule
 
-# Hello guys
+# Prerequisite
+
+Make sure to set your go path.
+
+```
+export GOPATH=$(go env GOPATH)
+```
+
+In my case (@Marvr) I set my path in:
+```
+~/go
+```
+
+# Building go library
+
+```
+go install github.com/apollo-anonymous/true-serverless-demo-app/lambda
+```
+
+# Testing go library
+
+```
+$GOPATH/bin/lambda
+```

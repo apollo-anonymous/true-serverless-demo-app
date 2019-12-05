@@ -24,6 +24,12 @@ In my case (@Marvr) I set my path in:
 ~/go
 ```
 
+# Pull down the library
+
+```
+go get "github.com/apollo-anonymous/true-serverless-demo-app"
+```
+
 # Building go library
 
 ```

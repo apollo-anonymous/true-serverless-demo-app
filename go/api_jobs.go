@@ -11,12 +11,37 @@
 package cronscheduler
 
 import (
+	"fmt"
 	"net/http"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/defaults"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/cloudwatchevents"
 )
+
+var client = createClient()
 
 func AddJob(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
+	putRule("test")
+}
+
+func putRule(name string) {
+	result, err := client.PutRule(&cloudwatchevents.PutRuleInput{
+		Description:        aws.String("testing"),
+		EventBusName:       aws.String("default"),
+		Name:               aws.String(name),
+		ScheduleExpression: aws.String("rate(5 minutes)"),
+	})
+
+	if err != nil {
+		fmt.Println("Error", err)
+		return
+	}
+	fmt.Println(result)
 }
 
 func DeleteJob(w http.ResponseWriter, r *http.Request) {
@@ -42,4 +67,36 @@ func GetJobs(w http.ResponseWriter, r *http.Request) {
 func UpdateJob(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
+}
+
+// create a CloudWatchEvents client
+func createClient() *cloudwatchevents.CloudWatchEvents {
+	// Initialize a session that the SDK uses to load
+	// credentials from the shared credentials file ~/.aws/credentials
+	// and configuration from the shared configuration file ~/.aws/config.
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	}))
+	// Create the cloudwatch events client
+	var region = "us-west-2"
+	// var resourceArn = "arn:aws:events:us-west-2:042182258218:event-bus/yishuoTest"
+	var accessKey = "ak"
+	var secretkey = "sk"
+
+	svc := cloudwatchevents.New(sess, &aws.Config{
+		Region: &region,
+		Credentials: credentials.NewChainCredentials(
+			[]credentials.Provider{
+				&credentials.StaticProvider{
+					Value: credentials.Value{
+						AccessKeyID:     accessKey,
+						SecretAccessKey: secretkey,
+					},
+				},
+				&credentials.EnvProvider{},
+				&credentials.SharedCredentialsProvider{},
+				defaults.RemoteCredProvider(*(defaults.Config()), defaults.Handlers()),
+			}),
+	})
+	return svc
 }

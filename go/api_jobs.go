@@ -12,6 +12,8 @@ package cronscheduler
 
 import (
 	"net/http"
+  "encoding/json"
+	"github.com/apollo-anonymous/true-serverless-demo-app/go/models"
 )
 
 func AddJob(w http.ResponseWriter, r *http.Request) {
@@ -37,6 +39,10 @@ func GetJobById(w http.ResponseWriter, r *http.Request) {
 func GetJobs(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
+
+  // Dummy implementation
+  jobs := []cronscheduler.Job{cronscheduler.Job{JobId:1}}
+  json.NewEncoder(w).Encode(jobs)
 }
 
 func UpdateJob(w http.ResponseWriter, r *http.Request) {

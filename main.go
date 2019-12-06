@@ -11,9 +11,9 @@
 package main
 
 import (
-    "log"
+	"log"
 
-    "github.com/apex/gateway"
+	"github.com/apex/gateway"
 
 	// WARNING!
 	// Change this to a fully-qualified import path
@@ -30,5 +30,5 @@ func main() {
 
 	router := sw.NewRouter()
 
-    log.Fatal(gateway.ListenAndServe("We are a Lambda", router))
+	log.Fatal(gateway.ListenAndServe("We are a Lambda", router))
 }
